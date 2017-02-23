@@ -21,16 +21,14 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import wu.cy.com.inspect.action.Action;
+import wu.cy.com.inspect.action.FileCopyAction;
+import wu.cy.com.inspect.action.MD5Action;
 
 
 public class FileListActivity extends AppCompatActivity {
@@ -211,19 +209,19 @@ public class FileListActivity extends AppCompatActivity {
 
     private void showThePopupWindow(final FileInfo fileInfo) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        String[] mBottomItems = new String[]{"Copy to sdcard", "Show the file MD5"};
+        final Action[] mItemAction = new Action[2];
+        mItemAction[0] = new FileCopyAction(this, "Copy to sdcard");
+        mItemAction[1] = new MD5Action(this, "Show the file MD5");
 
         View contentView = LayoutInflater.from(this).inflate(R.layout.popupwindow_unit_link_detail, null);
         ListView listView = (ListView) contentView.findViewById(R.id.bankcard_popup_list);
         listView.setAdapter(new ArrayAdapter<>(this,
-                R.layout.item_popup_list, R.id.tv_list_simple_item, mBottomItems));
+                R.layout.item_popup_list, R.id.tv_list_simple_item, mItemAction));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                if(position == 1){
-                    showTheMD5Dialog(fileInfo);
-                }
+                mItemAction[position].doAction(fileInfo);
             }
         });
 
@@ -237,66 +235,9 @@ public class FileListActivity extends AppCompatActivity {
         bottomSheetDialog.show();
     }
 
-    private void showTheMD5Dialog(FileInfo info) {
-
-    }
 
 
-    public static boolean copyFile(File toFile, File fromFile) {
-        if(!fromFile.exists()){
-            return false;
-        }
-        if (toFile.exists()) {// 判断目标目录中文件是否存在
-            toFile.delete();
-            createFile(toFile, true);// 创建文件
-        }
-        InputStream is = null;
-        FileOutputStream fos = null;
-        try {
-            is = new FileInputStream(fromFile);// 创建文件输入流
-            fos = new FileOutputStream(toFile);// 文件输出流
-            byte[] buffer = new byte[1024];// 字节数组
-            while (is.read(buffer) != -1) {// 将文件内容写到文件中
-                fos.write(buffer);
-            }
-            return true;
-        } catch (FileNotFoundException e) {// 捕获文件不存在异常
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {// 捕获异常
-            e.printStackTrace();
-            return false;
-        }finally {
-            closeSilence(is);
-            closeSilence(fos);
-        }
-    }
 
-    private static void closeSilence(Closeable is) {
-        if(is!=null) {
-            try {
-                is.close();// 输入流关闭
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
-    public static void createFile(File file, boolean isFile) {// 创建文件
-        if (!file.exists()) {// 如果文件不存在
-            if (!file.getParentFile().exists()) {// 如果文件父目录不存在
-                createFile(file.getParentFile(), false);
-            } else {// 存在文件父目录
-                if (isFile) {// 创建文件
-                    try {
-                        file.createNewFile();// 创建新文件
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    file.mkdir();// 创建目录
-                }
-            }
-        }
-    }
+
 }

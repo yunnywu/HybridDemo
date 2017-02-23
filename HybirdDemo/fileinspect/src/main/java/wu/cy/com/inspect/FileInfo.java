@@ -5,8 +5,8 @@ package wu.cy.com.inspect;
  */
 
 public class FileInfo {
-    String fileName;
-    String filePath;
-    boolean isFold;
-    String lastModifyTime;
+    public String fileName;
+    public String filePath;
+    public boolean isFold;
+    public String lastModifyTime;
 }
