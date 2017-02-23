@@ -14,8 +14,8 @@ import java.security.MessageDigest;
  * Created by wcy8038 on 2017/2/22.
  */
 
-public class Md5Util {
-    
+public class MD5Util {
+
     public static String toMD5(String str) {
         if (TextUtils.isEmpty(str)) {
             return "";
@@ -47,6 +47,20 @@ public class Md5Util {
 
     public static String getFileMD5(File file) {
         if (!file.isFile()) {
+            return null;
+        }
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return getFileMD5(in);
+    }
+
+    public static String getFileMD5(String fileName) {
+        File file = new File(fileName);
+        if (!file.isFile()|| !file.exists()) {
             return null;
         }
         FileInputStream in = null;

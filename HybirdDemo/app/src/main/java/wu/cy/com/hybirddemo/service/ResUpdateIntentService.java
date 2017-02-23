@@ -5,11 +5,17 @@ import android.content.Intent;
 import android.content.Context;
 import android.util.Log;
 
+import org.apache.commons.compress.utils.IOUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import wu.cy.com.hybirddemo.util.IoUtils;
+import wu.cy.com.hybirddemo.util.MD5Util;
+import wu.cy.com.hybirddemo.util.YLog;
 
 /**
  * update the Resources file
@@ -63,46 +69,35 @@ public class ResUpdateIntentService extends IntentService {
      */
     public static void assets2Data(final Context context) {
         // 这3个变量每个版本不同需要更新
-        final String fileName = "archive_1.26.0_e506b7a123f49ce6dae369914d596a03.zip";
-        final String version = "1.26.0";
+        final String fileName = "125.zip";
+        final String version = "1.25.0";
         final String md5 = "e506b7a123f49ce6dae369914d596a03";
         final String domain = "";
-        InputStream inputStream = IoUtils.readInputFromAssets(context, fileName);
-        zip2Data(context, inputStream, version, md5, domain);
+        InputStream inputStream = null;
+        String exactFile =  context.getFilesDir().getAbsolutePath().toString() + File.separator + "local";
+        try {
+            inputStream = context.getResources().getAssets().open(fileName);
+            IoUtils.unZipApache(inputStream, exactFile);
+            YLog.d("unZipApache Success from asset" + fileName + " to " + exactFile);
+        }catch (IOException e) {
+            YLog.e("unZipApache Fail from asset" + fileName + " to " + exactFile);
+            e.printStackTrace();
+        }finally {
+            IOUtils.closeQuietly(inputStream);
+        }
     }
 
 
     /**
      * 解压zip包至缓存
      */
-    private static void zip2Data(final Context context, final InputStream inputStream, final String version, final String md5, final String domain) {
-                if (inputStream != null) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream(); // 因为inputStream不能重用，用于复制inputStream
-                    byte[] buffer = new byte[1024];
-                    int len;
-                    while ((len = inputStream.read(buffer)) > -1) {
-                        baos.write(buffer, 0, len);
-                    }
-                    baos.flush();
-
-                    String zipMD5 = MD5.getFileMD5(new ByteArrayInputStream(baos.toByteArray()));
-                    LogUtils.d(LogUtils.TAG_LOCAL, "zipMD5:%s,md5:%s", zipMD5, md5);
-                    if (md5.equals(zipMD5)) {
-                        try {
-                            IoUtils.unZipApache(new ByteArrayInputStream(baos.toByteArray()), context.getFilesDir().getAbsolutePath().toString() + "/" + LocalIntercept.LOCAL_PATH);
-                            LocalSpHelper.saveVersionInfo(version, md5);
-                            LocalSpHelper.saveDomain(domain);
-                            LogUtils.d(LogUtils.TAG_LOCAL, "zip解压至data成功");
-                            LocalSpHelper.setUpdating(false);//标记更新完毕
-                            LocalIntercept.clearInterceptDomain();
-                        } catch (Exception e) {
-                            LogUtils.e(LogUtils.TAG_LOCAL, Log.getStackTraceString(e));
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                return null;
-            }
-
-    }
+//    private static void zip2Data(final Context context, final InputStream inputStream,
+//                                 final String path) throws IOException {
+//        if (inputStream != null) {
+//
+//            IoUtils.unZipApache(new ByteArrayInputStream(baos.toByteArray()),
+//                            context.getFilesDir().getAbsolutePath().toString() + File.separator + "");
+//
+//        }
+//    }
 }

@@ -9,11 +9,16 @@ import android.widget.Button;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import wu.cy.com.hybirddemo.activity.PathDiffActivity;
+import wu.cy.com.hybirddemo.service.ResUpdateIntentService;
+import wu.cy.com.inspect.FileListActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.btn_patch)
     Button mPatchDiff;
+
+    @Bind(R.id.btn_file)
+    Button mBtnFileCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,5 +35,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mBtnFileCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FileListActivity.ACTION_FILE_MANAGER);
+                startActivity(intent);
+            }
+        });
+
+        ResUpdateIntentService.startActionResUpdate(this, "no");
     }
 }

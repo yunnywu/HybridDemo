@@ -8,16 +8,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import wu.cy.com.hybirddemo.R;
-import wu.cy.com.hybirddemo.util.Md5Util;
+import wu.cy.com.hybirddemo.util.MD5Util;
 import wu.cy.com.hybirddemo.util.PatchDiffUtil;
 
 public class PathDiffActivity extends AppCompatActivity {
@@ -64,7 +61,7 @@ public class PathDiffActivity extends AppCompatActivity {
     @OnClick(R.id.btn_generate_md5)
     public void generateTheFileMD5(){
         String fileName = "/sdcard/update_test/" + mEtFileName.getText().toString().trim();
-        mTvMd5.setText(Md5Util.fileToMD5(fileName));
+        mTvMd5.setText(MD5Util.getFileMD5(fileName));
     }
 
 

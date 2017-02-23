@@ -3,6 +3,7 @@ package wu.cy.com.hybirddemo.util;
 import android.content.Context;
 import android.util.Log;
 
+
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.utils.IOUtils;
@@ -157,7 +158,7 @@ public class IoUtils {
     /**
      * 解压，使用apache包，解决zip64问题
      */
-    public static void unZipApache(InputStream zipFileInputStream, String destDir) throws Exception {
+    public static void unZipApache(InputStream zipFileInputStream, String destDir) throws IOException {
         destDir = destDir.endsWith(File.separator) ? destDir : destDir + File.separator;
         ZipArchiveInputStream is = null;
 
@@ -183,7 +184,7 @@ public class IoUtils {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             throw e;
         } finally {
