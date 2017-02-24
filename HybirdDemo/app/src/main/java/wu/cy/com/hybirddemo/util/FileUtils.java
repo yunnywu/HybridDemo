@@ -1,6 +1,7 @@
 package wu.cy.com.hybirddemo.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 
@@ -20,11 +21,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /**
  * io操作工具类，未完成
  * Created by WILL on 2016/3/30.
  */
-public class IoUtils {
+public class FileUtils {
 
     /**
      * 获取data中文件的input
@@ -104,7 +109,6 @@ public class IoUtils {
         try {
             outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             outputStream.write(writeString.getBytes());
-            Log.d("wcy", "write2Data success");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -120,21 +124,64 @@ public class IoUtils {
         }
     }
 
-    public static void write2Data(Context context, String fileName, InputStream inputStream) {
-        FileOutputStream outputStream = null;
+    public static boolean write2File(String filePath,InputStream inputStream) {
+        if(filePath == null || inputStream == null){
+            return false;
+        }
         try {
-            outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            byte[] buffer = new byte[512];
+            File file = new File(filePath);
+            if(!file.exists()){
+                file.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(file);
+            return input2Output(inputStream, fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean input2Output(InputStream inputStream, OutputStream outputStream) {
+        if(inputStream == null && outputStream == null){
+            return false;
+        }
+        try {
+            byte[] buffer = new byte[1024];
             int count = 0;
             while ((count = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, count);
             }
             outputStream.flush();
-            Log.d("wcy", "write2Data success");
+            return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+        } finally {
+            IOUtils.closeQuietly(outputStream);
+            IOUtils.closeQuietly(inputStream);
+        }
+    }
+
+    public static boolean write2File(Context context, String fileName, InputStream inputStream) {
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            byte[] buffer = new byte[1024];
+            int count = 0;
+            while ((count = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, count);
+            }
+            outputStream.flush();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         } finally {
             if (outputStream != null) {
                 try {
@@ -193,33 +240,82 @@ public class IoUtils {
     }
 
 
+    /**
+     * 下载文件
+     *
+     * @param url
+     * @param md5
+     * return true success, false failure
+     */
+    public static boolean downloadFile(final String url, final String md5, String destFile) {
+        YLog.d("start download url " + url);
+        try {
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+            Response response = OkHttpUtil.getClient().newCall(request).execute();
+            if (response.isSuccessful()) {
+                InputStream inputStream = null;
+                inputStream = response.body().byteStream();
+
+                if (inputStream != null) {
+                    if(write2File(destFile, inputStream)){
+                        if(TextUtils.equals(md5,MD5Util.getFileMD5(destFile))){
+                            YLog.d("downloadZip_success to " + destFile);
+                            return true;
+                        }
+                    }
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            YLog.d("downloadZip fail");
+            e.printStackTrace();
+        } catch (IOException e) {
+            YLog.d("downloadZip fail");
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static String getFileNameFromUrl(String url){
+        int lastIndex = url.lastIndexOf("/");
+        return url.substring(lastIndex, url.length()-1);
+    }
+
     public static boolean deleteDir(File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
+            if(children !=null){
+                for (int i = 0; i < children.length; i++) {
+                    boolean success = deleteDir(new File(dir, children[i]));
+                    if (!success) {
+                        return false;
+                    }
                 }
+            }else {
+                return dir.delete();
             }
+        }else {
+            return dir.delete();
         }
-        // 目录此时为空，可以删除
-        return dir.delete();
+        return false;
     }
 
-
-    public static void renameDir(String fromDir, String toDir) {
-        File from = new File(fromDir);
-        if (!from.exists() || !from.isDirectory()) {
-            Log.d("wcy", "Directory does not exist: " + fromDir);
-            return;
-        }
-
-        File to = new File(toDir);
-        if (from.renameTo(to)) {
-            Log.d("wcy", "rename Success");
-        } else {
-            Log.d("wcy", "rename fail");
+    public static void createFile(File file, boolean isFile) {// 创建文件
+        if (!file.exists()) {// 如果文件不存在
+            if (!file.getParentFile().exists()) {// 如果文件父目录不存在
+                createFile(file.getParentFile(), false);
+            } else {// 存在文件父目录
+                if (isFile) {// 创建文件
+                    try {
+                        file.createNewFile();// 创建新文件
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    file.mkdirs();// 创建目录
+                }
+            }
         }
     }
 }

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wu.cy.com.inspect.action.Action;
+import wu.cy.com.inspect.action.DeleteAction;
 import wu.cy.com.inspect.action.FileCopyAction;
 import wu.cy.com.inspect.action.MD5Action;
 
@@ -173,6 +174,13 @@ public class FileListActivity extends AppCompatActivity {
             iconView.setImageResource(info.isFold ? R.drawable.ic_folder : R.drawable.ic_file);
             fileName.setText(info.fileName);
             modifyTime.setText(info.lastModifyTime);
+            mRlContent.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    showThePopupWindow(info);
+                    return true;
+                }
+            });
             if(info.isFold){
                 mRlContent.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -180,16 +188,8 @@ public class FileListActivity extends AppCompatActivity {
                        reloadFilePath(info.filePath);
                     }
                 });
-                mRlContent.setOnLongClickListener(null);
             }else {
                 mRlContent.setOnClickListener(null);
-                mRlContent.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        showThePopupWindow(info);
-                        return true;
-                    }
-                });
             }
         }
     }
@@ -209,9 +209,10 @@ public class FileListActivity extends AppCompatActivity {
 
     private void showThePopupWindow(final FileInfo fileInfo) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        final Action[] mItemAction = new Action[2];
-        mItemAction[0] = new FileCopyAction(this, "Copy to sdcard");
-        mItemAction[1] = new MD5Action(this, "Show the file MD5");
+        final List<Action> mItemAction = new ArrayList<>(4);
+        mItemAction.add(new FileCopyAction(this, "Copy to sdcard"));
+        mItemAction.add(new MD5Action(this, "Show the file MD5"));
+        mItemAction.add(new DeleteAction(this, "Delete this file"));
 
         View contentView = LayoutInflater.from(this).inflate(R.layout.popupwindow_unit_link_detail, null);
         ListView listView = (ListView) contentView.findViewById(R.id.bankcard_popup_list);
@@ -221,7 +222,7 @@ public class FileListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                mItemAction[position].doAction(fileInfo);
+                mItemAction.get(position).doAction(fileInfo);
             }
         });
 

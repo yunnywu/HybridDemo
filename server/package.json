@@ -1,0 +1,20 @@
+{
+  "name": "hybird_server",
+  "version": "1.0.0",
+  "description": "for hybrid test server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "yunnywu@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.1",
+    "multer": "^1.3.0"
+  }
+}

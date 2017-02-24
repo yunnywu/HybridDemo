@@ -4,18 +4,17 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import wu.cy.com.hybirddemo.util.IoUtils;
-import wu.cy.com.hybirddemo.util.MD5Util;
+import wu.cy.com.hybirddemo.util.FileUtils;
+import wu.cy.com.hybirddemo.util.OkHttpUtil;
 import wu.cy.com.hybirddemo.util.YLog;
 
 /**
@@ -32,11 +31,13 @@ public class ResUpdateIntentService extends IntentService {
         super("ResUpdateIntentService");
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
     /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
      *
-     * @see IntentService
      */
     public static void startActionResUpdate(Context context) {
         Intent intent = new Intent(context, ResUpdateIntentService.class);
@@ -44,6 +45,10 @@ public class ResUpdateIntentService extends IntentService {
         context.startService(intent);
     }
 
+    /**
+     * 解压assets 下的文件到内部存储
+     * @param context
+     */
     public static void startActionUnzipAssets(Context context) {
         Intent intent = new Intent(context, ResUpdateIntentService.class);
         intent.setAction(ACTION_UNZIP_ASSETS);
@@ -54,7 +59,7 @@ public class ResUpdateIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if(TextUtils.isEmpty(action)){
+            if(!TextUtils.isEmpty(action)){
                 switch (action){
                     case ACTION_RES_UPDATE:
                         handleActionResUpdate();break;
@@ -70,12 +75,63 @@ public class ResUpdateIntentService extends IntentService {
     }
 
     private void handleActionResUpdate() {
-        assets2Data(this);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("version", "1.2.5");
+            jsonObject.put("md5", "12131213");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        OkHttpUtil.postRequest("http://10.4.55.29:9091/check", jsonObject.toString(), new OkHttpUtil.IOkHttpListener() {
+            @Override
+            public void onSuccess(JSONObject dataObj) {
+                try {
+                    boolean needUpdate = dataObj.getBoolean("needUpdate");
+                    if (needUpdate){
+                        String patchUrl = dataObj.getString("patchUrl");
+                        String patchMD5 = dataObj.getString("pathMD5");
+                        String newVersion = dataObj.getString("newVersion");
+                        String entireUrl = dataObj.getString("entireUrl");
+                        String entireMD5 = dataObj.getString("entireMD5");
+
+                        if(!TextUtils.isEmpty(patchUrl) && !TextUtils.isEmpty(patchMD5)) {
+                            String filePath = ResUpdateIntentService.this.getFilesDir() +
+                                    File.separator + "cfp/" + FileUtils.getFileNameFromUrl(patchUrl);
+                            if(FileUtils.downloadFile(patchUrl, patchMD5, filePath)) {
+                                //start patch process
+                            }
+                        }else if(!TextUtils.isEmpty(entireUrl) && !TextUtils.isEmpty(entireMD5)){
+                            String filePath = ResUpdateIntentService.this.getFilesDir() +
+                                    File.separator + "cfp/" + FileUtils.getFileNameFromUrl(patchUrl);
+                            if(FileUtils.downloadFile(patchUrl, patchMD5, filePath)) {
+                                //start zip process
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (dataObj == null) {
+                    YLog.d("error parse data");
+                    return;
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                YLog.d("result error " + error);
+            }
+        });
     }
 
     private void handleActionUnzipAssets() {
         assets2Data(this);
     }
+
+
+
 
     /**
      * 把assets中的zip写入缓存中
@@ -90,7 +146,7 @@ public class ResUpdateIntentService extends IntentService {
         String exactFile =  context.getFilesDir().getAbsolutePath().toString() + File.separator + "local";
         try {
             inputStream = context.getResources().getAssets().open(fileName);
-            IoUtils.unZipApache(inputStream, exactFile);
+            FileUtils.unZipApache(inputStream, exactFile);
             YLog.d("unZipApache Success from asset" + fileName + " to " + exactFile);
         }catch (IOException e) {
             YLog.e("unZipApache Fail from asset" + fileName + " to " + exactFile);
@@ -99,18 +155,4 @@ public class ResUpdateIntentService extends IntentService {
             IOUtils.closeQuietly(inputStream);
         }
     }
-
-
-    /**
-     * 解压zip包至缓存
-     */
-//    private static void zip2Data(final Context context, final InputStream inputStream,
-//                                 final String path) throws IOException {
-//        if (inputStream != null) {
-//
-//            IoUtils.unZipApache(new ByteArrayInputStream(baos.toByteArray()),
-//                            context.getFilesDir().getAbsolutePath().toString() + File.separator + "");
-//
-//        }
-//    }
 }

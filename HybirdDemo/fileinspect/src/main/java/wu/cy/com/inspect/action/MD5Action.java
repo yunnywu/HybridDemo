@@ -23,16 +23,18 @@ public class MD5Action implements Action {
 
     @Override
     public void doAction(final FileInfo fileInfo) {
-        AlertDialog dialog = new AlertDialog.Builder(mContext).setTitle("Check MD5")
-                .setMessage(fileInfo.fileName + "\n" + FileUtil.getFileMD5(fileInfo.filePath))
-                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create();
-        dialog.show();
+        if(!fileInfo.isFold) {
+            AlertDialog dialog = new AlertDialog.Builder(mContext).setTitle("Check MD5")
+                    .setMessage(fileInfo.fileName + "\n" + FileUtil.getFileMD5(fileInfo.filePath))
+                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
+        }
     }
 
     @Override

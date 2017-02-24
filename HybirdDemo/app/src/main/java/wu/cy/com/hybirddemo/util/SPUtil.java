@@ -27,4 +27,8 @@ public class SPUtil {
     public static boolean getBoolean(String key, boolean defaultValue){
         return getPreference().getBoolean(key, defaultValue);
     }
+
+    public static void setBooleanSync(String key, boolean value){
+        getPreference().edit().putBoolean(key, value).apply();
+    }
 }

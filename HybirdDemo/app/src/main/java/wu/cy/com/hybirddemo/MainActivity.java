@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.File;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import wu.cy.com.hybirddemo.activity.PathDiffActivity;
 import wu.cy.com.hybirddemo.service.ResUpdateIntentService;
 import wu.cy.com.hybirddemo.util.PackageUtil;
 import wu.cy.com.hybirddemo.util.SPUtil;
+import wu.cy.com.hybirddemo.util.YLog;
 import wu.cy.com.inspect.FileListActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,14 +43,20 @@ public class MainActivity extends AppCompatActivity {
         mBtnFileCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FileListActivity.ACTION_FILE_MANAGER);
-                startActivity(intent);
+                String filePath = getFilesDir() +
+                        File.separator + "cfp/12/12/23/34/aaa.txt";
+                File cfpFold = new File(filePath);
+                if(!cfpFold.exists()){
+                    boolean success = cfpFold.mkdirs();
+                    YLog.d("mkdir success + " + success);
+                }
             }
         });
 
         if(SPUtil.getBoolean(PackageUtil.getVersionName() , false)) {
             //每个版本首次进入时，解压缩assets 下面的zip 文件
             ResUpdateIntentService.startActionUnzipAssets(this);
+            SPUtil.setBooleanSync(PackageUtil.getVersionName(), true);
         }else {
             //检查是否需要更新资源包
             ResUpdateIntentService.startActionResUpdate(this);
