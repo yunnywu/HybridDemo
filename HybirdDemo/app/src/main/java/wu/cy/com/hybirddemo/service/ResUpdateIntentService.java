@@ -3,6 +3,7 @@ package wu.cy.com.hybirddemo.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -21,9 +22,9 @@ import wu.cy.com.hybirddemo.util.YLog;
  * update the Resources file
  */
 public class ResUpdateIntentService extends IntentService {
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_RES_UPDATE= "wu.cy.com.hybirddemo.service.action.RES_UPDATE";
 
+    private static final String ACTION_UNZIP_ASSETS= "wu.cy.com.hybirddemo.service.action.UNZIP_ASSETS";
 
     private static final String EXTRA_PARAM = "wu.cy.com.hybirddemo.service.extra.PARAM2";
 
@@ -37,30 +38,42 @@ public class ResUpdateIntentService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionResUpdate(Context context,  String param) {
+    public static void startActionResUpdate(Context context) {
         Intent intent = new Intent(context, ResUpdateIntentService.class);
         intent.setAction(ACTION_RES_UPDATE);
-        intent.putExtra(EXTRA_PARAM, param);
         context.startService(intent);
     }
 
+    public static void startActionUnzipAssets(Context context) {
+        Intent intent = new Intent(context, ResUpdateIntentService.class);
+        intent.setAction(ACTION_UNZIP_ASSETS);
+        context.startService(intent);
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_RES_UPDATE.equals(action)) {
-                final String param = intent.getStringExtra(EXTRA_PARAM);
-                handleActionResUpdate(param);
+            if(TextUtils.isEmpty(action)){
+                switch (action){
+                    case ACTION_RES_UPDATE:
+                        handleActionResUpdate();break;
+                    case ACTION_UNZIP_ASSETS:
+                        handleActionUnzipAssets();break;
+
+                    default:
+                        break;
+
+                }
             }
         }
     }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionResUpdate(String param) {
+    private void handleActionResUpdate() {
+        assets2Data(this);
+    }
+
+    private void handleActionUnzipAssets() {
         assets2Data(this);
     }
 

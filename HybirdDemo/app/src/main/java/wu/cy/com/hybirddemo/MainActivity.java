@@ -10,6 +10,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import wu.cy.com.hybirddemo.activity.PathDiffActivity;
 import wu.cy.com.hybirddemo.service.ResUpdateIntentService;
+import wu.cy.com.hybirddemo.util.PackageUtil;
+import wu.cy.com.hybirddemo.util.SPUtil;
 import wu.cy.com.inspect.FileListActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +45,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ResUpdateIntentService.startActionResUpdate(this, "no");
+        if(SPUtil.getBoolean(PackageUtil.getVersionName() , false)) {
+            //每个版本首次进入时，解压缩assets 下面的zip 文件
+            ResUpdateIntentService.startActionUnzipAssets(this);
+        }else {
+            //检查是否需要更新资源包
+            ResUpdateIntentService.startActionResUpdate(this);
+
+        }
     }
 }
