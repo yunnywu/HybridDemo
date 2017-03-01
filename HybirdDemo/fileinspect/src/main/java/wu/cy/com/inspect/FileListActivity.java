@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import wu.cy.com.inspect.action.Action;
-import wu.cy.com.inspect.action.DeleteAction;
-import wu.cy.com.inspect.action.FileCopyAction;
-import wu.cy.com.inspect.action.MD5Action;
 
 
 public class FileListActivity extends AppCompatActivity {
@@ -48,6 +44,7 @@ public class FileListActivity extends AppCompatActivity {
     FileAdapter mFileAdapter;
     String rootDir;
     List<FileInfo> mFileInfoList = new ArrayList<>();
+    private String mCurrentPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +61,6 @@ public class FileListActivity extends AppCompatActivity {
         }
 
         loadFiles(filePath);
-
-        setBackVisible(filePath);
-
         if(mFileInfoList.isEmpty()){
             mRecycleView.setVisibility(View.GONE);
             mRlNoFile.setVisibility(View.VISIBLE);
@@ -93,8 +87,9 @@ public class FileListActivity extends AppCompatActivity {
     }
 
     private void loadFiles(String filePath) {
+        mCurrentPath = filePath;
         mFileInfoList.clear();
-        File file = new File(filePath);
+        File file = new File(mCurrentPath);
         mTvPath.setText(file.getPath().replace(rootDir, getPackageName()));
         File[] files = file.listFiles();
         if (files != null) {
@@ -108,6 +103,8 @@ public class FileListActivity extends AppCompatActivity {
                 mFileInfoList.add(fileInfo);
             }
         }
+
+        setBackVisible(filePath);
     }
 
     private void initView() {
@@ -196,7 +193,6 @@ public class FileListActivity extends AppCompatActivity {
 
     private void reloadFilePath(String filePath) {
         loadFiles(filePath);
-        setBackVisible(filePath);
         if(mFileInfoList.isEmpty()){
             mRecycleView.setVisibility(View.GONE);
             mRlNoFile.setVisibility(View.VISIBLE);
@@ -222,7 +218,14 @@ public class FileListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                mItemAction.get(position).doAction(fileInfo);
+                mItemAction.get(position).doAction(fileInfo, new Action.ActionCallBack() {
+                    @Override
+                    public void callBack(boolean needReload) {
+                        if(needReload){
+                            reloadFilePath(mCurrentPath);
+                        }
+                    }
+                });
             }
         });
 
@@ -236,9 +239,14 @@ public class FileListActivity extends AppCompatActivity {
         bottomSheetDialog.show();
     }
 
-
-
-
-
-
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!TextUtils.equals(rootDir, mCurrentPath)) {
+                reloadFilePath(mCurrentPath.substring(0, mCurrentPath.lastIndexOf(File.separator)));
+                return true;
+            }
+        }
+        return super.onKeyUp(keyCode, event);
+    }
 }

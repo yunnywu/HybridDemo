@@ -1,9 +1,10 @@
-package wu.cy.com.inspect.action;
+package wu.cy.com.inspect;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 
+import wu.cy.com.inspect.Action;
 import wu.cy.com.inspect.FileInfo;
 import wu.cy.com.inspect.FileUtil;
 
@@ -22,7 +23,7 @@ public class MD5Action implements Action {
     }
 
     @Override
-    public void doAction(final FileInfo fileInfo) {
+    public void doAction(final FileInfo fileInfo, ActionCallBack actionCallBack) {
         if(!fileInfo.isFold) {
             AlertDialog dialog = new AlertDialog.Builder(mContext).setTitle("Check MD5")
                     .setMessage(fileInfo.fileName + "\n" + FileUtil.getFileMD5(fileInfo.filePath))

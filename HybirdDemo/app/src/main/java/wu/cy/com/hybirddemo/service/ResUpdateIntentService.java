@@ -10,11 +10,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import wu.cy.com.hybirddemo.util.FileUtils;
+import wu.cy.com.hybirddemo.util.MD5Util;
 import wu.cy.com.hybirddemo.util.OkHttpUtil;
+import wu.cy.com.hybirddemo.util.PackageUtil;
+import wu.cy.com.hybirddemo.util.PatchDiffUtil;
+import wu.cy.com.hybirddemo.util.SPUtil;
 import wu.cy.com.hybirddemo.util.YLog;
 
 /**
@@ -75,84 +80,13 @@ public class ResUpdateIntentService extends IntentService {
     }
 
     private void handleActionResUpdate() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("version", "1.2.5");
-            jsonObject.put("md5", "12131213");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        OkHttpUtil.postRequest("http://10.4.55.29:9091/check", jsonObject.toString(), new OkHttpUtil.IOkHttpListener() {
-            @Override
-            public void onSuccess(JSONObject dataObj) {
-                try {
-                    boolean needUpdate = dataObj.getBoolean("needUpdate");
-                    if (needUpdate){
-                        String patchUrl = dataObj.getString("patchUrl");
-                        String patchMD5 = dataObj.getString("pathMD5");
-                        String newVersion = dataObj.getString("newVersion");
-                        String entireUrl = dataObj.getString("entireUrl");
-                        String entireMD5 = dataObj.getString("entireMD5");
-
-                        if(!TextUtils.isEmpty(patchUrl) && !TextUtils.isEmpty(patchMD5)) {
-                            String filePath = ResUpdateIntentService.this.getFilesDir() +
-                                    File.separator + "cfp/" + FileUtils.getFileNameFromUrl(patchUrl);
-                            if(FileUtils.downloadFile(patchUrl, patchMD5, filePath)) {
-                                //start patch process
-                            }
-                        }else if(!TextUtils.isEmpty(entireUrl) && !TextUtils.isEmpty(entireMD5)){
-                            String filePath = ResUpdateIntentService.this.getFilesDir() +
-                                    File.separator + "cfp/" + FileUtils.getFileNameFromUrl(patchUrl);
-                            if(FileUtils.downloadFile(patchUrl, patchMD5, filePath)) {
-                                //start zip process
-                            }
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (dataObj == null) {
-                    YLog.d("error parse data");
-                    return;
-                }
-            }
-
-            @Override
-            public void onError(String error) {
-                YLog.d("result error " + error);
-            }
-        });
+        ResUpdateUtil.updateResFromServer(this);
     }
+
+
 
     private void handleActionUnzipAssets() {
-        assets2Data(this);
+        ResUpdateUtil.assets2Data(this);
     }
 
-
-
-
-    /**
-     * 把assets中的zip写入缓存中
-     */
-    public static void assets2Data(final Context context) {
-        // 这3个变量每个版本不同需要更新
-        final String fileName = "125.zip";
-        final String version = "1.25.0";
-        final String md5 = "e506b7a123f49ce6dae369914d596a03";
-        final String domain = "";
-        InputStream inputStream = null;
-        String exactFile =  context.getFilesDir().getAbsolutePath().toString() + File.separator + "local";
-        try {
-            inputStream = context.getResources().getAssets().open(fileName);
-            FileUtils.unZipApache(inputStream, exactFile);
-            YLog.d("unZipApache Success from asset" + fileName + " to " + exactFile);
-        }catch (IOException e) {
-            YLog.e("unZipApache Fail from asset" + fileName + " to " + exactFile);
-            e.printStackTrace();
-        }finally {
-            IOUtils.closeQuietly(inputStream);
-        }
-    }
 }

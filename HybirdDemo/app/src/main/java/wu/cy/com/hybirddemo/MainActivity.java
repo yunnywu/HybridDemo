@@ -43,23 +43,18 @@ public class MainActivity extends AppCompatActivity {
         mBtnFileCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String filePath = getFilesDir() +
-                        File.separator + "cfp/12/12/23/34/aaa.txt";
-                File cfpFold = new File(filePath);
-                if(!cfpFold.exists()){
-                    boolean success = cfpFold.mkdirs();
-                    YLog.d("mkdir success + " + success);
-                }
+                Intent intent = new Intent("com.wu.cy.action.file.manager");
+                startActivity(intent);
             }
         });
 
-        if(SPUtil.getBoolean(PackageUtil.getVersionName() , false)) {
-            //每个版本首次进入时，解压缩assets 下面的zip 文件
-            ResUpdateIntentService.startActionUnzipAssets(this);
-            SPUtil.setBooleanSync(PackageUtil.getVersionName(), true);
-        }else {
+        if(SPUtil.getBoolean("ResUpdate" + PackageUtil.getVersionName() , false)) {
             //检查是否需要更新资源包
             ResUpdateIntentService.startActionResUpdate(this);
+        }else {
+            //每个版本首次进入时，解压缩assets 下面的zip 文件
+            ResUpdateIntentService.startActionUnzipAssets(this);
+
 
         }
     }

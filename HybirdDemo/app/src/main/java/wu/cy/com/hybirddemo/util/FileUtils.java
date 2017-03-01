@@ -279,7 +279,7 @@ public class FileUtils {
 
     public static String getFileNameFromUrl(String url){
         int lastIndex = url.lastIndexOf("/");
-        return url.substring(lastIndex, url.length()-1);
+        return url.substring(lastIndex, url.length());
     }
 
     public static boolean deleteDir(File dir) {
@@ -292,13 +292,9 @@ public class FileUtils {
                         return false;
                     }
                 }
-            }else {
-                return dir.delete();
             }
-        }else {
-            return dir.delete();
         }
-        return false;
+        return dir.delete();
     }
 
     public static void createFile(File file, boolean isFile) {// 创建文件

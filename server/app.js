@@ -8,9 +8,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const patchMd5 = "9b4c4dfe972df109d3defa2862e2636c";
-const patchPath = "http://10.4.55.29:9091/patch/125_to_126.zip";
+const patchPath = "http://10.21.1.119:9091/patch/125_to_126.zip";
 const v126MD5 = "e506b7a123f49ce6dae369914d596a03";
-const v126Path = "http://10.4.55.29:9091/patch/126.zip";
+const v126Path = "http://10.21.1.119:9091/patch/126.zip";
 
 app.use(express.static('public'));
 

@@ -1,5 +1,7 @@
 package wu.cy.com.inspect;
 
+import android.util.Log;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
@@ -16,7 +19,9 @@ import java.security.MessageDigest;
 
 public class FileUtil {
 
-    public static boolean copyFile(File toFile, File fromFile) {
+    private static final String TAG = FileUtil.class.getSimpleName();
+
+    static boolean copyFile(File toFile, File fromFile) {
         if(!fromFile.exists()){
             return false;
         }
@@ -56,7 +61,7 @@ public class FileUtil {
         }
     }
 
-    public static void createFile(File file, boolean isFile) {// 创建文件
+    static void createFile(File file, boolean isFile) {// 创建文件
         if (!file.exists()) {// 如果文件不存在
             if (!file.getParentFile().exists()) {// 如果文件父目录不存在
                 createFile(file.getParentFile(), false);
@@ -74,7 +79,7 @@ public class FileUtil {
         }
     }
 
-    public static String getFileMD5(String fileName) {
+    static String getFileMD5(String fileName) {
         File file = new File(fileName);
         if (!file.isFile()|| !file.exists()) {
             return null;
@@ -88,7 +93,7 @@ public class FileUtil {
         return getFileMD5(in);
     }
 
-    public static String getFileMD5(InputStream inputStream) {
+    static String getFileMD5(InputStream inputStream) {
         if (inputStream == null) {
             return null;
         }
@@ -114,7 +119,7 @@ public class FileUtil {
         return bigInt.toString(16);
     }
 
-    public static boolean deleteDir(File dir) {
+    static boolean deleteDir(File dir) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             if(children !=null){
@@ -124,12 +129,42 @@ public class FileUtil {
                         return false;
                     }
                 }
-            }else {
-                return dir.delete();
             }
-        }else {
-            return dir.delete();
         }
-        return false;
+        return dir.delete();
+    }
+
+    // If targetLocation does not exist, it will be created.
+    static void copyDirectory(File sourceLocation , File targetLocation) throws IOException {
+
+        if (sourceLocation.isDirectory()) {
+            if (!targetLocation.exists() && !targetLocation.mkdirs()) {
+                throw new IOException("Cannot create dir " + targetLocation.getAbsolutePath());
+            }
+
+            String[] children = sourceLocation.list();
+            for (int i=0; i<children.length; i++) {
+                copyDirectory(new File(sourceLocation, children[i]),
+                        new File(targetLocation, children[i]));
+            }
+        } else {
+            // make sure the directory we plan to store the recording in exists
+            File directory = targetLocation.getParentFile();
+            if (directory != null && !directory.exists() && !directory.mkdirs()) {
+                throw new IOException("Cannot create dir " + directory.getAbsolutePath());
+            }
+
+            InputStream in = new FileInputStream(sourceLocation);
+            OutputStream out = new FileOutputStream(targetLocation);
+
+            // Copy the bits from instream to outstream
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        }
     }
 }

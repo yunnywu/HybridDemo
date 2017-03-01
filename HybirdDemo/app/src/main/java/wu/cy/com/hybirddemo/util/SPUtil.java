@@ -28,7 +28,15 @@ public class SPUtil {
         return getPreference().getBoolean(key, defaultValue);
     }
 
-    public static void setBooleanSync(String key, boolean value){
+    public static void putBooleanSync(String key, boolean value){
         getPreference().edit().putBoolean(key, value).apply();
+    }
+
+    public static void putString(String key, String value){
+        getPreference().edit().putString(key, value).apply();
+    }
+
+    public static String getString(String key, String defaultValue){
+        return getPreference().getString(key, defaultValue);
     }
 }
