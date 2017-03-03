@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -14,8 +13,6 @@ import wu.cy.com.hybirddemo.activity.PathDiffActivity;
 import wu.cy.com.hybirddemo.service.ResUpdateIntentService;
 import wu.cy.com.hybirddemo.util.PackageUtil;
 import wu.cy.com.hybirddemo.util.SPUtil;
-import wu.cy.com.hybirddemo.util.YLog;
-import wu.cy.com.inspect.FileListActivity;
 
 public class MainActivity extends AppCompatActivity {
 

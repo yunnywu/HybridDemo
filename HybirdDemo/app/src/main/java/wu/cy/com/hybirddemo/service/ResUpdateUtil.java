@@ -40,7 +40,7 @@ public class ResUpdateUtil {
             e.printStackTrace();
         }
 
-        OkHttpUtil.postRequest("http://10.21.1.119:9091/check", jsonObject.toString(), new OkHttpUtil.IOkHttpListener() {
+        OkHttpUtil.postRequest("http://192.168.31.199:9091/check", jsonObject.toString(), new OkHttpUtil.IOkHttpListener() {
             @Override
             public void onSuccess(JSONObject dataObj) {
                 try {

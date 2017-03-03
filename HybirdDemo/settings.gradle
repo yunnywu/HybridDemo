@@ -1,1 +1,1 @@
-include ':app', ':fileinspect'
+include ':app'
