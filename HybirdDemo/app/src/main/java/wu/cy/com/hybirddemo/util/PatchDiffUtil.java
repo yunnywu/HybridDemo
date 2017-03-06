@@ -32,5 +32,5 @@ public class PatchDiffUtil {
      * @param patchPath  示例:/sdcard/xx.patch
      * @return
      */
-    public static native int genDiff(String oldApkPath, String newApkPath, String patchPath);
+    public static native int diff(String oldApkPath, String newApkPath, String patchPath);
 }

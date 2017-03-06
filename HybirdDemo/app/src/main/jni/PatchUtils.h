@@ -8,12 +8,22 @@
 extern "C" {
 #endif
     /*
-     * Class:     com_cundong_utils_PatchUtils
+     * Class:     Java_wu_cy_com_hybirddemo_util_PatchDiffUtil_patch
+     *      wu.cy.com.hybirddemo.util.PatchDiffUtil
      * Method:    patch
      * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I
      */
     JNIEXPORT jint JNICALL Java_wu_cy_com_hybirddemo_util_PatchDiffUtil_patch
-    (JNIEnv *, jclass, jstring, jstring, jstring);
+    (JNIEnv *, jobject, jstring, jstring, jstring);
+
+/*
+    * Class:    Java_wu_cy_com_hybirddemo_util_PatchDiffUtil_diff
+    * Method:    patch
+    * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I
+    */
+    JNIEXPORT jint JNICALL Java_wu_cy_com_hybirddemo_util_PatchDiffUtil_diff
+        (JNIEnv *, jobject, jstring, jstring, jstring);
+
     
 #ifdef __cplusplus
 }

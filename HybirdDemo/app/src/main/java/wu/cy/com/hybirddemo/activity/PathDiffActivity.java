@@ -71,7 +71,7 @@ public class PathDiffActivity extends AppCompatActivity {
             @Override
             public void run() {
                 long startTime = System.currentTimeMillis();
-                final int result = PatchDiffUtil.genDiff(APK_310, APK_312, APK_DIFF);
+                final int result = PatchDiffUtil.diff(APK_310, APK_312, APK_DIFF);
                 Log.d("wcy", "genDiff for " + (System.currentTimeMillis() - startTime));
                 runOnUiThread(new Runnable() {
                     @Override
