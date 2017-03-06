@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
         }else {
             //每个版本首次进入时，解压缩assets 下面的zip 文件
             ResUpdateIntentService.startActionUnzipAssets(this);
-
-
         }
     }
 }

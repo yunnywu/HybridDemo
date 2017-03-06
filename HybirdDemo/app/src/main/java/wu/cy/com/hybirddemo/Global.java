@@ -5,4 +5,8 @@ package wu.cy.com.hybirddemo;
  */
 
 public class Global {
+
+//    public static final String HOST = "http://192.168.31.199:9091";
+    public static final String HOST = "http://10.21.18.49:9091";
+
 }

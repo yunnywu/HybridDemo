@@ -239,44 +239,6 @@ public class FileUtils {
         }
     }
 
-
-    /**
-     * 下载文件
-     *
-     * @param url
-     * @param md5
-     * return true success, false failure
-     */
-    public static boolean downloadFile(final String url, final String md5, String destFile) {
-        YLog.d("start download url " + url);
-        try {
-            Request request = new Request.Builder()
-                    .url(url)
-                    .build();
-            Response response = OkHttpUtil.getClient().newCall(request).execute();
-            if (response.isSuccessful()) {
-                InputStream inputStream = null;
-                inputStream = response.body().byteStream();
-
-                if (inputStream != null) {
-                    if(write2File(destFile, inputStream)){
-                        if(TextUtils.equals(md5,MD5Util.getFileMD5(destFile))){
-                            YLog.d("downloadZip_success to " + destFile);
-                            return true;
-                        }
-                    }
-                }
-            }
-        } catch (IllegalArgumentException e) {
-            YLog.d("downloadZip fail");
-            e.printStackTrace();
-        } catch (IOException e) {
-            YLog.d("downloadZip fail");
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public static String getFileNameFromUrl(String url){
         int lastIndex = url.lastIndexOf("/");
         return url.substring(lastIndex, url.length());

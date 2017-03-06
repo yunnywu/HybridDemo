@@ -1,6 +1,7 @@
 package wu.cy.com.hybirddemo.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by wcy8038 on 2017/2/22.
@@ -16,85 +18,64 @@ import java.security.MessageDigest;
 
 public class MD5Util {
 
-    public static String toMD5(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return "";
+    private static final String TAG = "MD5";
+
+    public static boolean checkMD5(String md5, File updateFile) {
+        if (TextUtils.isEmpty(md5) || updateFile == null) {
+            Log.e(TAG, "MD5 string empty or updateFile null");
+            return false;
         }
-        String result = "";
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(str.getBytes());
-            byte b[] = md.digest();
-            int i;
-            StringBuffer buf = new StringBuffer("");
-            for (int offset = 0; offset < b.length; offset++) {
-                i = b[offset];
-                if (i < 0)
-                    i += 256;
-                if (i < 16)
-                    buf.append("0");
-                buf.append(Integer.toHexString(i));
-            }
-            result = buf.toString();
-            System.out.println("MD5(" + str + ",32) = " + result);
-            System.out.println("MD5(" + str + ",16) = "
-                    + buf.toString().substring(8, 24));
-        } catch (Exception e) {
-            System.out.println(e);
+
+        String calculatedDigest = calculateMD5(updateFile);
+        if (calculatedDigest == null) {
+            Log.e(TAG, "calculatedDigest null");
+            return false;
         }
-        return result;
+
+        Log.v(TAG, "Calculated digest: " + calculatedDigest);
+        Log.v(TAG, "Provided digest: " + md5);
+
+        return calculatedDigest.equalsIgnoreCase(md5);
     }
 
-    public static String getFileMD5(File file) {
-        if (!file.isFile()) {
-            return null;
-        }
-        FileInputStream in = null;
-        try {
-            in = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return getFileMD5(in);
-    }
 
-    public static String getFileMD5(String fileName) {
-        File file = new File(fileName);
-        if (!file.isFile()|| !file.exists()) {
-            return null;
-        }
-        FileInputStream in = null;
-        try {
-            in = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return getFileMD5(in);
-    }
-
-    public static String getFileMD5(InputStream inputStream) {
-        if (inputStream == null) {
-            return null;
-        }
-        MessageDigest digest = null;
-        byte buffer[] = new byte[1024];
-        int len;
+    public static String calculateMD5(File updateFile) {
+        MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("MD5");
-            while ((len = inputStream.read(buffer, 0, 1024)) != -1) {
-                digest.update(buffer, 0, len);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "Exception while getting digest", e);
             return null;
+        }
+
+        InputStream is;
+        try {
+            is = new FileInputStream(updateFile);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Exception while getting FileInputStream", e);
+            return null;
+        }
+
+        byte[] buffer = new byte[8192];
+        int read;
+        try {
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] md5sum = digest.digest();
+            BigInteger bigInt = new BigInteger(1, md5sum);
+            String output = bigInt.toString(16);
+            // Fill to 32 chars
+            output = String.format("%32s", output).replace(' ', '0');
+            return output;
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to process file for MD5", e);
         } finally {
             try {
-                inputStream.close();
+                is.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Exception on closing MD5 input stream", e);
             }
         }
-        BigInteger bigInt = new BigInteger(1, digest.digest());
-        return bigInt.toString(16);
     }
 }

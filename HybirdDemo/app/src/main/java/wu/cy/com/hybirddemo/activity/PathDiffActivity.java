@@ -16,17 +16,19 @@ import butterknife.OnClick;
 import wu.cy.com.hybirddemo.R;
 import wu.cy.com.hybirddemo.util.MD5Util;
 import wu.cy.com.hybirddemo.util.PatchDiffUtil;
+import wu.cy.com.hybirddemo.util.YLog;
 
 public class PathDiffActivity extends AppCompatActivity {
 
     //低版本的apk文件
-    private static final String APK_310 = "/sdcard/update_test/125.zip";
+//    private static final String APK_310 = "/sdcard/update_test/125.zip";
+    private static final String APK_310 = "/sdcard/update_test/res_1.0.0_ca35bee9f659e9c11abe2cd300e1295d.zip";
 
     //高版本的diff文件
-    private static final String APK_312 = "/sdcard/update_test/126.zip";
+    private static final String APK_312 = "/sdcard/update_test/res_1.0.1_629b18b6b84824f2913994e1506312b2.zip";
 
     //生成的diff文件
-    private static final String APK_DIFF = "/sdcard/update_test/diff.zip";
+    private static final String APK_DIFF = "/sdcard/update_test/diff1.zip";
 
     //patch 之后生成的文件
     private static final String APK_NEW = "/sdcard/update_test/new.zip";
@@ -61,7 +63,11 @@ public class PathDiffActivity extends AppCompatActivity {
     @OnClick(R.id.btn_generate_md5)
     public void generateTheFileMD5(){
         String fileName = "/sdcard/update_test/" + mEtFileName.getText().toString().trim();
-        mTvMd5.setText(MD5Util.getFileMD5(fileName));
+        File file = new File(fileName);
+        if(file.exists()) {
+            mTvMd5.setText(MD5Util.calculateMD5(file));
+            YLog.d("md5 = " + MD5Util.calculateMD5(file));
+        }
     }
 
 
