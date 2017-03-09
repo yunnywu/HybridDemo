@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".HybridActivity">
+        <activity android:name=".hybrid.HybridActivity">
         </activity>
         <activity android:name=".activity.PathDiffActivity">
         </activity>

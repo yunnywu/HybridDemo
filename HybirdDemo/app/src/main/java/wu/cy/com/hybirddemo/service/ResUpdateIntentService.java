@@ -19,8 +19,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import wu.cy.com.hybirddemo.Global;
-import wu.cy.com.hybirddemo.hybrid.LocalSpHelper;
-import wu.cy.com.hybirddemo.hybrid.LocalUpdate;
 import wu.cy.com.hybirddemo.util.FileUtils;
 import wu.cy.com.hybirddemo.util.MD5Util;
 import wu.cy.com.hybirddemo.util.OkHttpUtil;
@@ -139,7 +137,7 @@ public class ResUpdateIntentService extends IntentService {
         LocalUpdate.local_updating = true; //标记需要更新
         YLog.d("local更新接口返回===md5:" + md5 + " version =" + version + " downloadUrl = "
                 + downloadUrl + " patchUrl = " + patchUrl + " patchMd5 = " + patchMd5);
-        LocalUpdate.clearLocal(this);//删除原来的资源包
+
         if(!TextUtils.isEmpty(patchUrl)){//download patch, merge the patch
             String patchFileName = FileUtils.getFileNameFromUrl(patchUrl);//patch file name
             String newFileName = FileUtils.getFileNameFromUrl(downloadUrl); //合成之后的文件
@@ -198,7 +196,9 @@ public class ResUpdateIntentService extends IntentService {
             File patchFold = LocalUpdate.getHybridPatchDir(ResUpdateIntentService.this);
             File wholeFile = new File(patchFold, fileName);
             YLog.d("wholeFile MD5 = " + MD5Util.calculateMD5(wholeFile));
-            zipFileToLocal(ResUpdateIntentService.this, version, md5, wholeFile, fileName);
+            if(TextUtils.equals(md5, MD5Util.calculateMD5(wholeFile))) {
+                zipFileToLocal(ResUpdateIntentService.this, version, md5, wholeFile, fileName);
+            }
         }
     }
 
@@ -304,6 +304,7 @@ public class ResUpdateIntentService extends IntentService {
     private boolean zipFileToLocal(Context context, String version, String md5,
                                    File patchFile, String fileName) {
         YLog.d("zipFileToLocal " +  patchFile.getAbsolutePath());
+        LocalUpdate.clearLocal(this);//删除原来的资源包
         try {
             //zip from patch to local
             FileUtils.unZipApache(new FileInputStream(patchFile),

@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import wu.cy.com.hybirddemo.hybrid.HybridActivity;
 import wu.cy.com.hybirddemo.activity.PathDiffActivity;
 import wu.cy.com.hybirddemo.service.ResUpdateIntentService;
 import wu.cy.com.hybirddemo.util.PackageUtil;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mBtnFileCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent("com.wu.cy.action.file.manager");
+                Intent intent = new Intent(MainActivity.this, HybridActivity.class);
                 startActivity(intent);
             }
         });

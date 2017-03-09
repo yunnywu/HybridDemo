@@ -1,4 +1,4 @@
-package wu.cy.com.hybirddemo.hybrid;
+package wu.cy.com.hybirddemo.service;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package wu.cy.com.hybirddemo.hybrid;
+package wu.cy.com.hybirddemo.service;
 
 import wu.cy.com.hybirddemo.util.SPUtil;
 

@@ -16,13 +16,13 @@
         android:id="@+id/btn_patch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Patch Diff Test"
+        android:text="PatchDiffActivity"
         />
 
     <Button
         android:id="@+id/btn_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="File Check"
+        android:text="HybridActivity"
         />
 </LinearLayout>
