@@ -82,8 +82,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	exports.default = function (msg) {
-	  return (0, _callHandle2.default)('toast', msg);
+	//msg = message
+	//duration long or short
+	exports.default = function (msg, duration) {
+	  return (0, _callHandle2.default)('toast', { 'message': msg, 'duration': duration });
 	}; //getDeviceInfo.js
 
 /***/ },

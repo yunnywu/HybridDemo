@@ -1,6 +1,8 @@
 //getDeviceInfo.js
 import callHandle from '../bridge/callHandle';
 
-export default (msg) => {
-  return callHandle('toast',msg);
+//msg = message
+//duration long or short
+export default (msg, duration) => {
+  return callHandle('toast', {'message':msg, 'duration':duration});
 };
