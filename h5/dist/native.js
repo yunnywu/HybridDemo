@@ -60,11 +60,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _toast2 = _interopRequireDefault(_toast);
 
+	var _phoneCall = __webpack_require__(4);
+
+	var _phoneCall2 = _interopRequireDefault(_phoneCall);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	//index.js
 	module.exports = {
-		toast: _toast2.default
-	}; //index.js
+		toast: _toast2.default,
+		phoneCall: _phoneCall2.default
+	};
 
 /***/ },
 /* 1 */
@@ -149,6 +155,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  });
 	};
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _callHandle = __webpack_require__(2);
+
+	var _callHandle2 = _interopRequireDefault(_callHandle);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	//msg = message
+	//duration long or short
+	exports.default = function (number) {
+	  return (0, _callHandle2.default)('call', { 'number': number });
+	}; //getDeviceInfo.js
 
 /***/ }
 /******/ ])

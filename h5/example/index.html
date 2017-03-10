@@ -2,37 +2,37 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
-  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <title>Hybrid测试</title>
+  <link rel="stylesheet" type="text/css" href="../css/index.css">
 </head>
 <body>
   
-<div class="app">
-    <div class="hd">
-        <h1 class="title">Hybrid测试</h1>
-        <p class="sub_title">handler功能</p>
+<div >
+    <div >
+        <h2>Hybrid功能测试</h2>
     </div>
-    <div class="bd">
-        <div class="btn_cells">
-            <a class="btn_cell" id="device">
-                <span>弹出toast</span>
-                <div class="btn_cell_ft"></div>
-            </a>
-            <a class="btn_cell" id="phone">
-                <span>拨打电话组件</span>
-                <div class="btn_cell_ft"></div>
-            </a>
-        </div>
+    <div >
+   		<div class="btn-div" id="toast">
+        	<p class="btn">弹出toast</p>
+    	</div>
+    	<div class="btn-div" id="phoneCall">
+        	<p class="btn">拨打电话</p>
+    	</div>
     </div>
+
 </div>
 
 <script src="../dist/native.js"></script>
 <script>
 	window.onload = function() {
-		var deviceEl = document.getElementById('device');
-        deviceEl.onclick = function() {
+		var toastEl = document.getElementById('toast');
+        toastEl.onclick = function() {
             native.toast("123456", "long");
-            console.log('deviceInfo', "dddddddd");
+        };
+
+        var callEl = document.getElementById('phoneCall');
+        callEl.onclick = function() {
+            native.phoneCall("123456");
         };
     }
 

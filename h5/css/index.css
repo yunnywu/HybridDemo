@@ -1,21 +1,14 @@
-//index.css
-.app .bd .btn_cells .btn_cell_ft{
-    /*float: right;*/
-    /*text-align: right;*/
-    position: absolute;
-    right: 5%;
-    margin: auto 0;
-    color: #888;
-}
-.app .bd .btn_cells .btn_cell_ft:after{
-    content: " ";
-    display: inline-block;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-    height: 6px;
-    width: 6px;
-    border-width: 2px 2px 0 0;
-    border-color: #c8c8cd;
-    border-style: solid;
-    position: relative;
+.btn {
+		border:2px solid #1f9dc0;
+		background:#fff;
+		width:60%;
+		border-radius:5px;
+		margin-bottom: 10px;
+		text-align: center;
+		padding: 5px;
+	 }	
+
+.btn-container{
+	width: 100%;
+	justify-content: center;
 }

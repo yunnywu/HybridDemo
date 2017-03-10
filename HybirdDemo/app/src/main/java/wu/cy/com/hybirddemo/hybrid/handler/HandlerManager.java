@@ -1,6 +1,10 @@
 package wu.cy.com.hybirddemo.hybrid.handler;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -47,7 +51,30 @@ public class HandlerManager {
             }
         });
 
+        mBridgeWebView.registerHandler("call", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                try {
+                    JSONObject jsonObject = new JSONObject(data);
+                    String number = jsonObject.optString("number");
+                    if(!TextUtils.isEmpty(number)) {
+                        //TODO check permission
+                        new AlertDialog.Builder(mContext)
+                                .setMessage("call number" + number)
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
+                                    }
+                                })
+                                .setNegativeButton("取消", null)
+                                .show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
 
 
