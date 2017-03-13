@@ -8,11 +8,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const patchMd5 = "998a9860a41bbb809feafb774f40f602";
-//const patchPath = "http://192.168.31.199:9091/patch/125_to_126.zip";
-const patchPath = "http://10.21.18.49:9091/patch/res_1.0.0_to_1.0.1_998a9860a41bbb809feafb774f40f602.zip";
+//const patchPath = "http://192.168.31.199:12580/patch/125_to_126.zip";
+const patchPath = "http://10.21.18.49:12580/patch/res_1.0.0_to_1.0.1_998a9860a41bbb809feafb774f40f602.zip";
 const v101MD5 = "629b18b6b84824f2913994e1506312b2";
-//const v101Path = "http://192.168.31.199:9091/patch/res_1.0.1_958ee9a3bdac34c2a78acd6ef04747b.zip";
-const v101Path = "http://10.21.18.49:9091/patch/res_1.0.1_629b18b6b84824f2913994e1506312b2.zip";
+//const v101Path = "http://192.168.31.199:12580/patch/res_1.0.1_958ee9a3bdac34c2a78acd6ef04747b.zip";
+const v101Path = "http://10.21.18.49:12580/patch/res_1.0.1_629b18b6b84824f2913994e1506312b2.zip";
 
 app.use(express.static('public'));
 
@@ -48,7 +48,7 @@ app.post('/check', function (req, res) {
 
 
 
-var server = app.listen(9091, function () {
+var server = app.listen(12580, function () {
 
   var host = server.address().address
   var port = server.address().port
