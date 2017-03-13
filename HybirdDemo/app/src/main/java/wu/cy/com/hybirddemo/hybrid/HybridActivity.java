@@ -16,7 +16,7 @@ public class HybridActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hybrid);
 
-        HybridFragment hybridFragment = HybridFragment.newInstance(Global.TEST_INDEX_URL);
+        HybridFragment hybridFragment = HybridFragment.newInstance(Global.TEST_MM_URL);
         getSupportFragmentManager().beginTransaction().replace(R.id.root_content,
                 hybridFragment).commit();
     }

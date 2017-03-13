@@ -2,11 +2,8 @@ package wu.cy.com.hybirddemo.hybrid.handler;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.cy.wu.jsbridge.BridgeHandler;
@@ -51,23 +48,44 @@ public class HandlerManager {
             }
         });
 
-        mBridgeWebView.registerHandler("call", new BridgeHandler() {
+        mBridgeWebView.registerHandler("alertDialog", new BridgeHandler() {
             @Override
-            public void handler(String data, CallBackFunction function) {
+            public void handler(String data, final CallBackFunction function) {
                 try {
-                    JSONObject jsonObject = new JSONObject(data);
-                    String number = jsonObject.optString("number");
-                    if(!TextUtils.isEmpty(number)) {
-                        //TODO check permission
+                    final JSONObject jsonObject = new JSONObject(data);
+                    String title = jsonObject.optString("title");
+                    String message = jsonObject.optString("message");
+                    if(!TextUtils.isEmpty(message)) {
                         new AlertDialog.Builder(mContext)
-                                .setMessage("call number" + number)
+                                .setTitle(title)
+                                .setMessage(message)
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        JSONObject jsonObject1 = new JSONObject();
+                                        try {
+                                            jsonObject1.put("result","ok");
+                                            JsCallBack callBack = new JsCallBack(0, "", jsonObject1);
+                                            function.onCallBack(callBack.toJson());
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
 
                                     }
                                 })
-                                .setNegativeButton("取消", null)
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                         JSONObject jsonObject1 = new JSONObject();
+                                        try {
+                                            jsonObject1.put("result","cancel");
+                                            JsCallBack callBack = new JsCallBack(0, "", jsonObject1);
+                                            function.onCallBack(callBack.toJson());
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                })
                                 .show();
                     }
                 } catch (JSONException e) {

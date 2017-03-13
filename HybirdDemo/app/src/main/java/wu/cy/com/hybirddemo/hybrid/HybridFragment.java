@@ -5,8 +5,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.cy.wu.jsbridge.BridgeHandler;
 import com.cy.wu.jsbridge.BridgeWebView;
-import com.cy.wu.jsbridge.CallBackFunction;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,6 +29,8 @@ import wu.cy.com.hybirddemo.hybrid.handler.HandlerManager;
 
 public class HybridFragment extends Fragment {
 
+    public static final String URL_BLANK = "about:blank";
+
     private static final String EXTRA_LOAD_URL = "extra_load_url";
 
     private static final String TAG = "HybridFragment";
@@ -38,6 +39,9 @@ public class HybridFragment extends Fragment {
 
     @Bind(R.id.webView)
     BridgeWebView mWebView;
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,7 +96,7 @@ public class HybridFragment extends Fragment {
 //        webSettings.setDefaultFontSize(18);
         webSettings.setDefaultTextEncodingName("utf-8");
 
-        mWebView.setWebChromeClient(new WebChromeClient());
+        mWebView.setWebChromeClient(new HybridWebChromeClient());
         mWebView.setDownloadListener(new DownloadListener() {
             @Override
             public void onDownloadStart(String url, String s1, String s2, String s3, long l) {
@@ -110,6 +114,14 @@ public class HybridFragment extends Fragment {
         destroyTheWebView();
     }
 
+    private void setTitle(String title) {
+        if (!TextUtils.isEmpty(title)) {
+            if (!title.contains(URL_BLANK)) {
+                mToolbar.setTitle(title);
+            }
+        }
+    }
+
     private void destroyTheWebView() {
         if (mWebView != null) {
             if (mWebView.getParent() != null) {
@@ -118,6 +130,14 @@ public class HybridFragment extends Fragment {
             WebView webView = mWebView;
             mWebView = null;
             webView.destroy();
+        }
+    }
+
+    class HybridWebChromeClient extends WebChromeClient{
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            super.onReceivedTitle(view, title);
+            setTitle(title);
         }
     }
 }

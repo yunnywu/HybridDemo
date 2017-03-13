@@ -60,16 +60,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _toast2 = _interopRequireDefault(_toast);
 
-	var _phoneCall = __webpack_require__(4);
+	var _alertDialog = __webpack_require__(4);
 
-	var _phoneCall2 = _interopRequireDefault(_phoneCall);
+	var _alertDialog2 = _interopRequireDefault(_alertDialog);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	//index.js
 	module.exports = {
 		toast: _toast2.default,
-		phoneCall: _phoneCall2.default
+		alertDialog: _alertDialog2.default
+
 	};
 
 /***/ },
@@ -116,10 +117,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return new Promise(function (resolve, reject) {
 	    (0, _onBridgeReady2.default)().then(function (bridge) {
 	      bridge.callHandler(handlerName, data, function (response) {
-	        if (response.retCode === 0) {
-	          resolve(response.retData);
+	        console.log(response);
+	        var resPbj = JSON.parse(response);
+	        if (resPbj.retCode === 0) {
+	          resolve(JSON.parse(resPbj.retData));
 	        } else {
-	          reject(response);
+	          reject(resPbj.retMessage);
 	        }
 	      });
 	    });
@@ -174,8 +177,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	//msg = message
 	//duration long or short
-	exports.default = function (number) {
-	  return (0, _callHandle2.default)('call', { 'number': number });
+	exports.default = function (title, message, callbackOk, callbackkCancel) {
+	  return (0, _callHandle2.default)('alertDialog', { 'title': title, 'message': message }).then(function (response) {
+	    console.log('alertDialog' + response);
+	    if (response.result && response.result.toLowerCase() === "ok") {
+	      if (callbackOk) {
+	        callbackOk();
+	      }
+	    } else if (response.result && response.result.toLowerCase() === "cancel") {
+	      if (callbackkCancel) {
+	        callbackkCancel();
+	      }
+	    }
+	  }).catch(function (error) {
+	    console.log('error ' + error);
+	  });
 	}; //getDeviceInfo.js
 
 /***/ }

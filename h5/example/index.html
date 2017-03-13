@@ -15,8 +15,8 @@
    		<div class="btn-div" id="toast">
         	<p class="btn">弹出toast</p>
     	</div>
-    	<div class="btn-div" id="phoneCall">
-        	<p class="btn">拨打电话</p>
+    	<div class="btn-div" id="alertDialog">
+        	<p class="btn">对话框</p>
     	</div>
     </div>
 
@@ -30,9 +30,13 @@
             native.toast("123456", "long");
         };
 
-        var callEl = document.getElementById('phoneCall');
+        var callEl = document.getElementById('alertDialog');
         callEl.onclick = function() {
-            native.phoneCall("123456");
+            native.alertDialog("This is a Title", "This is a message", function(){
+                native.toast("OK clicked", "long");
+            }, function(){
+                native.toast("Cancel clicked", "long");
+            });
         };
     }
 

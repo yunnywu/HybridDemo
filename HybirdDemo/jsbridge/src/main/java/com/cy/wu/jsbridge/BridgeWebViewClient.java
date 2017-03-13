@@ -1,6 +1,8 @@
 package com.cy.wu.jsbridge;
 
 import android.graphics.Bitmap;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
