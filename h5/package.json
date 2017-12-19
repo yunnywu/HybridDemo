@@ -47,6 +47,7 @@
     "object-assign": "^4.1.0",
     "query-string": "^4.2.3",
     "raf": "^3.3.0",
-    "semver-compare": "^1.0.0"
+    "semver-compare": "^1.0.0",
+    "serve": "^6.4.3"
   }
 }

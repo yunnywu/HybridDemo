@@ -52,7 +52,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -73,9 +73,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	};
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -95,9 +95,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return (0, _callHandle2.default)('toast', { 'message': msg, 'duration': duration });
 	}; //getDeviceInfo.js
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -129,9 +129,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	}; // CallHandle.js
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -159,9 +159,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	};
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -194,7 +194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	}; //getDeviceInfo.js
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

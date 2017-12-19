@@ -14,7 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import wu.cy.com.hybirddemo.R;
-import wu.cy.com.hybirddemo.util.MD5Util;
+import wu.cy.com.hybirddemo.util.Md5Util;
 import wu.cy.com.hybirddemo.util.PatchDiffUtil;
 import wu.cy.com.hybirddemo.util.YLog;
 
@@ -65,8 +65,8 @@ public class PathDiffActivity extends AppCompatActivity {
         String fileName = "/sdcard/update_test/" + mEtFileName.getText().toString().trim();
         File file = new File(fileName);
         if(file.exists()) {
-            mTvMd5.setText(MD5Util.calculateMD5(file));
-            YLog.d("md5 = " + MD5Util.calculateMD5(file));
+            mTvMd5.setText(Md5Util.calculateMD5(file));
+            YLog.d("md5 = " + Md5Util.calculateMD5(file));
         }
     }
 

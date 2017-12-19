@@ -20,7 +20,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import wu.cy.com.hybirddemo.Global;
 import wu.cy.com.hybirddemo.util.FileUtils;
-import wu.cy.com.hybirddemo.util.MD5Util;
+import wu.cy.com.hybirddemo.util.Md5Util;
 import wu.cy.com.hybirddemo.util.OkHttpUtil;
 import wu.cy.com.hybirddemo.util.PackageUtil;
 import wu.cy.com.hybirddemo.util.PatchDiffUtil;
@@ -166,8 +166,8 @@ public class ResUpdateIntentService extends IntentService {
         if(downloadZip(ResUpdateIntentService.this, downloadUrl, patchFileName)){//下载成功
             File patchFold = LocalUpdate.getHybridPatchDir(ResUpdateIntentService.this);
             File patchFile = new File(patchFold, patchFileName); //pacth 文件
-            YLog.d("patchFile MD5 = %s" + MD5Util.calculateMD5(patchFile));
-            if(!TextUtils.equals(MD5Util.calculateMD5(patchFile), patchMD5)){
+            YLog.d("patchFile MD5 = %s" + Md5Util.calculateMD5(patchFile));
+            if(!TextUtils.equals(Md5Util.calculateMD5(patchFile), patchMD5)){
                 return false;//下载文件失败
             }
 
@@ -178,7 +178,7 @@ public class ResUpdateIntentService extends IntentService {
                          + baseFile.getAbsolutePath() + " + " + patchFile.getAbsolutePath()+ " = " + newFile.getAbsolutePath());
                 int result = PatchDiffUtil.patch(baseFile.getAbsolutePath(), newFile.getAbsolutePath(),
                         patchFile.getAbsolutePath());
-                if(result == 0 && TextUtils.equals(md5, MD5Util.calculateMD5(newFile))){
+                if(result == 0 && TextUtils.equals(md5, Md5Util.calculateMD5(newFile))){
                     YLog.d("PatchUtil.patch successful  MD5 Right!!");
                     return zipFileToLocal(ResUpdateIntentService.this, version, md5, newFile, newFileName);
                 }else {
@@ -195,8 +195,8 @@ public class ResUpdateIntentService extends IntentService {
         if(downloadZip(ResUpdateIntentService.this,downloadUrl, fileName)){//下载成功
             File patchFold = LocalUpdate.getHybridPatchDir(ResUpdateIntentService.this);
             File wholeFile = new File(patchFold, fileName);
-            YLog.d("wholeFile MD5 = " + MD5Util.calculateMD5(wholeFile));
-            if(TextUtils.equals(md5, MD5Util.calculateMD5(wholeFile))) {
+            YLog.d("wholeFile MD5 = " + Md5Util.calculateMD5(wholeFile));
+            if(TextUtils.equals(md5, Md5Util.calculateMD5(wholeFile))) {
                 zipFileToLocal(ResUpdateIntentService.this, version, md5, wholeFile, fileName);
             }
         }

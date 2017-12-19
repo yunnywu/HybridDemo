@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by wcy8038 on 2017/2/22.
  */
 
-public class MD5Util {
+public class Md5Util {
 
     private static final String TAG = "MD5";
 
